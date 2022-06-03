@@ -12,7 +12,7 @@ public class RoomInListButton : MonoBehaviour
     {
         manager = GameObject.FindGameObjectWithTag("Manager").GetComponent<Manager>();
     }
-    //
+    
     private void Start()
     {
         _name = gameObject.name;
