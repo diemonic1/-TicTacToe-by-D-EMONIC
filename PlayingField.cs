@@ -33,10 +33,8 @@ public class PlayingField : Photon.MonoBehaviour
         clearField();
 
         for (int i = 0; i < 9; i++)
-        {
             _buttonsOnField[i].GetComponent<Button>().interactable = true;
-        }
-
+        
         updateVisualisation.restartGameImages();
         updateVisualisation.startGameVisual(isThisClientHost);
     }
@@ -61,7 +59,7 @@ public class PlayingField : Photon.MonoBehaviour
     {
         _buttonsOnField[numberOfActivate].GetComponent<Button>().interactable = false;
 
-        if (_isWin == false)
+        if (!_isWin)
         {
             int yPosition = numberOfActivate / 3;
             int xPosition = numberOfActivate % 3;
@@ -91,43 +89,28 @@ public class PlayingField : Photon.MonoBehaviour
         for (int i = 0; i < 3; i++) 
         {
             if (_playingField[i, 0] + _playingField[i, 1] + _playingField[i, 2] == 0)
-            {
                 winnerSign = 0;
-            }
             else if (_playingField[i, 0] + _playingField[i, 1] + _playingField[i, 2] == 3)
-            {
                 winnerSign = 1;
-            }
         }
 
         for (int i = 0; i < 3; i++)
         {
             if (_playingField[0, i] + _playingField[1, i] + _playingField[2, i] == 0)
-            {
                 winnerSign = 0;
-            }
             else if (_playingField[0, i] + _playingField[1, i] + _playingField[2, i] == 3)
-            {
                 winnerSign = 1;
-            }
         }
 
         if (_playingField[0, 0] + _playingField[1, 1] + _playingField[2, 2] == 0)
-        {
             winnerSign = 0;
-        }
         else if (_playingField[0, 0] + _playingField[1, 1] + _playingField[2, 2] == 3)
-        {
             winnerSign = 1;
-        }
         else if (_playingField[0, 2] + _playingField[1, 1] + _playingField[2, 0] == 0)
-        {
             winnerSign = 0;
-        }
         else if (_playingField[0, 2] + _playingField[1, 1] + _playingField[2, 0] == 3)
-        {
             winnerSign = 1;
-        }
+        
 
         if (winnerSign >= 0)
             gameOver(winnerSign);
