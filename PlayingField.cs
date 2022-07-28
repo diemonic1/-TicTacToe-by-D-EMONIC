@@ -3,8 +3,6 @@ using UnityEngine.UI;
 
 public class PlayingField : Photon.MonoBehaviour
 {
-    public int StepOfGame { get; private set; }
-
     [SerializeField] private GameObject[] _buttonsOnField;
 
     private int[,] _playingField;
@@ -14,48 +12,40 @@ public class PlayingField : Photon.MonoBehaviour
     [SerializeField] private Manager manager;
     [SerializeField] private UpdateVisualisation updateVisualisation;
 
-    private void Start() 
+    public int StepOfGame { get; private set; }
+
+    public void PrepareRoom(bool isThisClientHost)
     {
-        clearField();
+        RestartLocalGame(isThisClientHost);
+        updateVisualisation.WaitForPlayer();
     }
 
-    public void prepareRoom(bool isThisClientHost)
-    {
-        restartLocalGame(isThisClientHost);
-        updateVisualisation.waitForPlayer();
-    }
-
-    public void restartLocalGame(bool isThisClientHost) 
+    public void RestartLocalGame(bool isThisClientHost)
     {
         StepOfGame = 0;
         _isWin = false;
-        manager.setVisibilityOfRestartButton(false);
-        clearField();
+        manager.SetVisibilityOfRestartButton(false);
+        ClearField();
 
         for (int i = 0; i < 9; i++)
             _buttonsOnField[i].GetComponent<Button>().interactable = true;
-        
-        updateVisualisation.restartGameImages();
-        updateVisualisation.startGameVisual(isThisClientHost);
+
+        updateVisualisation.RestartGameImages();
+        updateVisualisation.StartGameVisual(isThisClientHost);
     }
 
-    private void clearField()
+    public void StartGame(bool isThisClientHost)
     {
-        _playingField = new int[3, 3] { { -10, -10, -10 }, { -10, -10, -10 }, { -10, -10, -10 } };
+        updateVisualisation.StartGameVisual(isThisClientHost);
     }
 
-    public void startGame(bool isThisClientHost) 
+    public void SendNumberOfPressedButton(int numberOfActivate)
     {
-        updateVisualisation.startGameVisual(isThisClientHost);
+        if (_buttonsOnField[numberOfActivate].GetComponent<Button>().interactable && manager.IsGameStart() && !_isWin && ((manager.IsThisClientHost() && StepOfGame % 2 == 0) || (!manager.IsThisClientHost() && StepOfGame % 2 == 1)))
+            manager.SendNumberOfPressedButton(numberOfActivate);
     }
 
-    public void sendNumberOfPressedButton(int numberOfActivate)
-    {
-        if (_buttonsOnField[numberOfActivate].GetComponent<Button>().interactable && manager.isGameStart() && !_isWin && ((manager.isThisClientHost() && StepOfGame % 2 == 0) || (!manager.isThisClientHost() && StepOfGame % 2 == 1)))
-            manager.sendNumberOfPressedButton(numberOfActivate);
-    }
-
-    public void updatePlayingField(int numberOfActivate, bool isThisClientHost)
+    public void UpdatePlayingField(int numberOfActivate, bool isThisClientHost)
     {
         _buttonsOnField[numberOfActivate].GetComponent<Button>().interactable = false;
 
@@ -73,20 +63,35 @@ public class PlayingField : Photon.MonoBehaviour
 
             _playingField[yPosition, xPosition] = sign;
 
-            updateVisualisation.updateImages(numberOfActivate, sign, StepOfGame, isThisClientHost);
+            updateVisualisation.UpdateImages(numberOfActivate, sign, StepOfGame, isThisClientHost);
 
             StepOfGame += 1;
 
-            checkFieldOnWinLine();
+            CheckFieldOnWinLine();
         }
     }
 
-    private void checkFieldOnWinLine() 
+    private void Start()
+    {
+        ClearField();
+    }
+
+    private void ClearField()
+    {
+        _playingField = new int[3, 3]
+        {
+            { -10, -10, -10 },
+            { -10, -10, -10 },
+            { -10, -10, -10 },
+        };
+    }
+
+    private void CheckFieldOnWinLine()
     {
         // 0 - zeros, 1 - crosses, -1 - draw
         int winnerSign = -10;
 
-        for (int i = 0; i < 3; i++) 
+        for (int i = 0; i < 3; i++)
         {
             if (_playingField[i, 0] + _playingField[i, 1] + _playingField[i, 2] == 0)
                 winnerSign = 0;
@@ -110,24 +115,23 @@ public class PlayingField : Photon.MonoBehaviour
             winnerSign = 0;
         else if (_playingField[0, 2] + _playingField[1, 1] + _playingField[2, 0] == 3)
             winnerSign = 1;
-        
 
         if (winnerSign >= 0)
-            gameOver(winnerSign);
+            GameOver(winnerSign);
         else if (StepOfGame == 9 && _isWin == false)
-            gameOver(-1);
+            GameOver(-1);
     }
 
-    private void gameOver(int winnerSign)
+    private void GameOver(int winnerSign)
     {
         _isWin = true;
-        manager.setVisibilityOfRestartButton(true);
+        manager.SetVisibilityOfRestartButton(true);
 
         if (winnerSign == 0)
-            updateVisualisation.showZeroWinScreen();
+            updateVisualisation.ShowZeroWinScreen();
         else if (winnerSign == 1)
-            updateVisualisation.showCrossWinScreen();
+            updateVisualisation.ShowCrossWinScreen();
         else
-            updateVisualisation.showDrawScreen();
+            updateVisualisation.ShowDrawScreen();
     }
 }

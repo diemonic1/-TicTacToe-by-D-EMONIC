@@ -3,8 +3,6 @@ using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
-    public string Nickname { get; private set; }
-
     [SerializeField] private GameObject _gameFolder, _listOfRooms, _roomMenuElement, _restartButton;
     [SerializeField] private Text _secondPlayerNicknameText;
     [SerializeField] private InputField _nicknameTextInputField;
@@ -15,78 +13,72 @@ public class Menu : MonoBehaviour
     [Header("Links to instances")]
     [SerializeField] private Manager manager;
 
-    private void Start()
-    {
-        if (PlayerPrefs.GetString("Nickname") != "")
-            _nicknameTextInputField.text = PlayerPrefs.GetString("Nickname");
-        else
-            _nicknameTextInputField.text = "player";
-    }
+    public string Nickname { get; private set; }
 
-    public void setVisibilityOfRestartButton(bool parametr)
+    public void SetVisibilityOfRestartButton(bool parametr)
     {
         _restartButton.SetActive(parametr);
     }
 
-    public void openListOfRooms()
+    public void OpenListOfRooms()
     {
         Nickname = _nicknameTextInputField.text;
         PlayerPrefs.SetString("Nickname", Nickname);
     }
 
-    public void joinRoom()
+    public void JoinRoom()
     {
         _listOfRooms.SetActive(false);
         _gameFolder.SetActive(true);
     }
 
-    public void createRoom()
+    public void CreateRoom()
     {
-        manager.createRoom(Nickname);
+        manager.CreateRoom(Nickname);
     }
 
-    public void restartGame()
+    public void RestartGame()
     {
-        manager.restartGame();
+        manager.RestartGame();
     }
 
-    public void showNameOfSecondPlayer(string nicknameOfSecondPlayer)
+    public void ShowNameOfSecondPlayer(string nicknameOfSecondPlayer)
     {
         _secondPlayerNicknameText.text = nicknameOfSecondPlayer + "\nс вами!";
     }
 
-    public void clearNameOfSecondPlayer()
+    public void ClearNameOfSecondPlayer()
     {
-        _secondPlayerNicknameText.text = "";
+        _secondPlayerNicknameText.text = string.Empty;
     }
 
-    public void backToListOfRooms()
+    public void BackToListOfRooms()
     {
         _gameFolder.SetActive(false);
         _listOfRooms.SetActive(true);
-        _secondPlayerNicknameText.text = "";
+        _secondPlayerNicknameText.text = string.Empty;
 
-        manager.leaveRoom();
+        manager.LeaveRoom();
     }
 
-    public void refreshListOfRooms() 
+    public void RefreshListOfRooms()
     {
-        clearListOfRooms();
+        ClearListOfRooms();
 
-        _countOfRooms = manager.getCountOfRooms();
+        _countOfRooms = manager.GetCountOfRooms();
 
         for (int i = 0; i < _countOfRooms; i++)
         {
             GameObject currentRoom = Instantiate(_roomMenuElement, new Vector3(0, 0, 0), Quaternion.identity);
 
             currentRoom.transform.SetParent(_listOfRooms.transform, true);
-            currentRoom.transform.localPosition = new Vector3(0, 525f - i * 110, 0);
+            currentRoom.transform.localPosition = new Vector3(0, 525f - (i * 110), 0);
             currentRoom.transform.localScale = new Vector3(1, 1, 1);
 
             _roomsList[i] = currentRoom;
 
-            string currentName = manager.getRoomName(i);
-            int currentCountOfPlayersInRoom = manager.getCountOfPlayersInRoom(i);
+            string currentName = manager.GetRoomName(i);
+            int currentCountOfPlayersInRoom = manager.GetCountOfPlayersInRoom(i);
 
             currentRoom.name = currentName;
             currentRoom.GetComponent<Text>().text = currentName + " " + currentCountOfPlayersInRoom + "/2";
@@ -96,11 +88,19 @@ public class Menu : MonoBehaviour
         }
     }
 
-    private void clearListOfRooms() 
+    private void Start()
+    {
+        if (PlayerPrefs.GetString("Nickname") != string.Empty)
+            _nicknameTextInputField.text = PlayerPrefs.GetString("Nickname");
+        else
+            _nicknameTextInputField.text = "player";
+    }
+
+    private void ClearListOfRooms()
     {
         for (int i = 0; i < _countOfRooms; i++)
         {
-            if (_roomsList[i] != null) 
+            if (_roomsList[i] != null)
                 Destroy(_roomsList[i]);
         }
     }

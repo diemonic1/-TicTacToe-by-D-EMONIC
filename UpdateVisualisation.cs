@@ -8,28 +8,28 @@ public class UpdateVisualisation : MonoBehaviour
 
     [SerializeField] private Text _title;
 
-    public void waitForPlayer()
+    public void WaitForPlayer()
     {
         _title.text = "ожидаем второго игрока";
     }
 
-    public void restartGameImages() 
+    public void RestartGameImages()
     {
-        for (int i = 0; i < 9; i++) 
+        for (int i = 0; i < 9; i++)
         {
             _playingFieldImages_zeros[i].SetActive(false);
             _playingFieldImages_crosses[i].SetActive(false);
         }
     }
 
-    public void updateImages(int numberOfActivated, int sign, int stepOfGame, bool isThisClientHost) 
+    public void UpdateImages(int numberOfActivated, int sign, int stepOfGame, bool isThisClientHost)
     {
         if (sign == 0)
             _playingFieldImages_zeros[numberOfActivated].SetActive(true);
-        else 
+        else
             _playingFieldImages_crosses[numberOfActivated].SetActive(true);
 
-        if (stepOfGame % 2 == 0 && isThisClientHost) 
+        if (stepOfGame % 2 == 0 && isThisClientHost)
             _title.text = "ход ноликов (не ваш)";
         else if (stepOfGame % 2 == 0 && isThisClientHost == false)
             _title.text = "ход ноликов (ваш)";
@@ -39,25 +39,25 @@ public class UpdateVisualisation : MonoBehaviour
             _title.text = "ход крестиков (не ваш)";
     }
 
-    public void startGameVisual(bool isThisClientHost)
+    public void StartGameVisual(bool isThisClientHost)
     {
         if (isThisClientHost)
             _title.text = "ход крестиков (ваш)";
-        else 
+        else
             _title.text = "ход крестиков (не ваш)";
     }
 
-    public void showZeroWinScreen()
+    public void ShowZeroWinScreen()
     {
         _title.text = "нолики победили!";
     }
 
-    public void showCrossWinScreen()
+    public void ShowCrossWinScreen()
     {
         _title.text = "крестики победили!";
     }
 
-    public void showDrawScreen()
+    public void ShowDrawScreen()
     {
         _title.text = "ничья!";
     }

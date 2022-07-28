@@ -8,105 +8,105 @@ public class Manager : MonoBehaviour
     [SerializeField] private ServerWork serverWork;
 
     #region calls from ServerWork
-    public string getLocalNickname()
+    public string GetLocalNickname()
     {
         return menu.Nickname;
     }
 
-    public void backToListOfRooms()
+    public void BackToListOfRooms()
     {
-        menu.backToListOfRooms();
+        menu.BackToListOfRooms();
     }
 
-    public void showNameOfSecondPlayer(string nicknameOfSeconddPlayer)
+    public void ShowNameOfSecondPlayer(string nicknameOfSeconddPlayer)
     {
-        menu.showNameOfSecondPlayer(nicknameOfSeconddPlayer);
+        menu.ShowNameOfSecondPlayer(nicknameOfSeconddPlayer);
     }
 
-    public void refreshListOfRooms()
+    public void RefreshListOfRooms()
     {
-        menu.refreshListOfRooms();
+        menu.RefreshListOfRooms();
     }
 
-    public void prepareRoom(bool isThisClientHost)
+    public void PrepareRoom(bool isThisClientHost)
     {
-        menu.clearNameOfSecondPlayer();
-        playingField.prepareRoom(isThisClientHost);
+        menu.ClearNameOfSecondPlayer();
+        playingField.PrepareRoom(isThisClientHost);
     }
 
-    public void updatePlayingField(int numberOfActivated, bool isThisClientHost)
+    public void UpdatePlayingField(int numberOfActivated, bool isThisClientHost)
     {
-        playingField.updatePlayingField(numberOfActivated, isThisClientHost);
+        playingField.UpdatePlayingField(numberOfActivated, isThisClientHost);
     }
 
-    public void startGame(bool isThisClientHost)
+    public void StartGame(bool isThisClientHost)
     {
-        playingField.startGame(isThisClientHost);
+        playingField.StartGame(isThisClientHost);
     }
 
-    public void restartLocalGame(bool isThisClientHost)
+    public void RestartLocalGame(bool isThisClientHost)
     {
-        playingField.restartLocalGame(isThisClientHost);
+        playingField.RestartLocalGame(isThisClientHost);
     }
     #endregion
 
     #region calls from Menu
-    public void joinRoom(string roomName)
+    public void JoinRoom(string roomName)
     {
-        menu.joinRoom();
-        serverWork.joinRoom(roomName);
+        menu.JoinRoom();
+        serverWork.JoinRoom(roomName);
     }
 
-    public void createRoom(string nickname)
+    public void CreateRoom(string nickname)
     {
-        serverWork.createRoom(nickname);
+        serverWork.CreateRoom(nickname);
     }
 
-    public void restartGame()
+    public void RestartGame()
     {
-        serverWork.restartGame();
+        serverWork.RestartGame();
     }
 
-    public void leaveRoom()
+    public void LeaveRoom()
     {
-        serverWork.leaveRoom();
+        serverWork.LeaveRoom();
     }
 
-    public int getCountOfRooms()
+    public int GetCountOfRooms()
     {
-        return serverWork.getCountOfRooms();
+        return serverWork.GetCountOfRooms();
     }
 
-    public string getRoomName(int numberInList)
+    public string GetRoomName(int numberInList)
     {
-        return serverWork.getRoomName(numberInList);
+        return serverWork.GetRoomName(numberInList);
     }
 
-    public int getCountOfPlayersInRoom(int numberInList)
+    public int GetCountOfPlayersInRoom(int numberInList)
     {
-        return serverWork.getCountOfPlayersInRoom(numberInList);
+        return serverWork.GetCountOfPlayersInRoom(numberInList);
     }
     #endregion
 
     #region calls from GameLogicAndPlayingField
-    public void sendNumberOfPressedButton(int numberOfActivated)
+    public void SendNumberOfPressedButton(int numberOfActivated)
     {
-        serverWork.sendNumberOfPressedButton(numberOfActivated);
+        serverWork.SendNumberOfPressedButton(numberOfActivated);
     }
 
-    public bool isGameStart()
+    public bool IsGameStart()
     {
         return serverWork.IsGameStarted;
     }
 
-    public bool isThisClientHost()
+    public bool IsThisClientHost()
     {
         return serverWork.IsThisClientHost;
     }
 
-    public void setVisibilityOfRestartButton(bool parametr)
+    public void SetVisibilityOfRestartButton(bool parametr)
     {
-        menu.setVisibilityOfRestartButton(parametr);
+        menu.SetVisibilityOfRestartButton(parametr);
     }
     #endregion
 }
