@@ -12,6 +12,6 @@ public class ServerCalls : Photon.PunBehaviour
 
     public override void OnPhotonPlayerDisconnected(PhotonPlayer other)
     {
-        serverWork.PlayerDisconnected();
+        serverWork.PlayerIsLeftRoom();
     }
 }
