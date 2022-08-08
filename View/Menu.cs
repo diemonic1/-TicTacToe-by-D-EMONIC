@@ -23,7 +23,7 @@ public class Menu : MonoBehaviour
 
     public void ShowNameOfSecondPlayer(string nicknameOfSecondPlayer)
     {
-        _secondPlayerNicknameText.text = nicknameOfSecondPlayer + "\nс вами!";
+        _secondPlayerNicknameText.text = nicknameOfSecondPlayer;
     }
 
     public void ClearNameOfSecondPlayer()
@@ -38,16 +38,16 @@ public class Menu : MonoBehaviour
         _secondPlayerNicknameText.text = string.Empty;
     }
 
-    public GameObject CreateRoomForList(int number, string name, int countOfPlayersInRoom)
+    public GameObject CreateRoomForList(float yPosition, string name, string caption)
     {
         GameObject room = Instantiate(_roomMenuElement, new Vector3(0, 0, 0), Quaternion.identity);
 
         room.transform.SetParent(_listOfRooms.transform, true);
-        room.transform.localPosition = new Vector3(0, 525f - (number * 110), 0);
+        room.transform.localPosition = new Vector3(0, yPosition, 0);
         room.transform.localScale = new Vector3(1, 1, 1);
 
         room.name = name;
-        room.GetComponent<Text>().text = name + " " + countOfPlayersInRoom + "/2";
+        room.GetComponent<Text>().text = caption;
 
         room.GetComponent<JoinRoomButton>().OnJoinRoom += JoinRoom;
 

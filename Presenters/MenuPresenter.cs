@@ -4,13 +4,17 @@ public class MenuPresenter
     private readonly ListOfRoomsHandler listOfRoomsHandler;
 
     private readonly FieldLogic fieldLogic;
-    private readonly ServerWork serverWork;
+    private readonly ServerTransmitter serverTransmitter;
+    private readonly ServerEvents serverEvents;
+    private readonly ServerCalls serverCalls;
 
-    public MenuPresenter(Menu menu, FieldLogic fieldLogic, ServerWork serverWork, ListOfRoomsHandler listOfRoomsHandler)
+    public MenuPresenter(Menu menu, FieldLogic fieldLogic, ServerContainer serverContainer, ListOfRoomsHandler listOfRoomsHandler)
     {
         this.menu = menu;
         this.fieldLogic = fieldLogic;
-        this.serverWork = serverWork;
+        this.serverTransmitter = serverContainer.ServerTransmitter;
+        this.serverEvents = serverContainer.ServerEvents;
+        this.serverCalls = serverContainer.ServerCalls;
         this.listOfRoomsHandler = listOfRoomsHandler;
     }
 
@@ -20,11 +24,13 @@ public class MenuPresenter
 
         fieldLogic.OnGameOver += EnableRestartButton;
 
-        serverWork.OnListUpdated += RefreshListOfRooms;
-        serverWork.OnPlayerLeftRoom += ClearRoom;
-        serverWork.OnHostLeftRoom += BackToListOfRooms;
-        serverWork.OnPlayerJoined += ShowNameOfSecondPlayer;
-        serverWork.OnGameStarted += DisableRestartButton;
+        serverTransmitter.OnPlayerLeftRoom += ClearRoom;
+        serverTransmitter.OnHostLeftRoom += BackToListOfRooms;
+
+        serverEvents.OnListUpdated += RefreshListOfRooms;
+
+        serverCalls.OnPlayerJoined += ShowNameOfSecondPlayer;
+        serverCalls.OnGameStarted += DisableRestartButton;
     }
 
     public void Disable()
@@ -33,17 +39,19 @@ public class MenuPresenter
 
         fieldLogic.OnGameOver -= EnableRestartButton;
 
-        serverWork.OnListUpdated -= RefreshListOfRooms;
-        serverWork.OnPlayerLeftRoom -= ClearRoom;
-        serverWork.OnHostLeftRoom -= BackToListOfRooms;
-        serverWork.OnPlayerJoined -= ShowNameOfSecondPlayer;
-        serverWork.OnGameStarted -= DisableRestartButton;
+        serverTransmitter.OnPlayerLeftRoom -= ClearRoom;
+        serverTransmitter.OnHostLeftRoom -= BackToListOfRooms;
+
+        serverEvents.OnListUpdated -= RefreshListOfRooms;
+
+        serverCalls.OnPlayerJoined -= ShowNameOfSecondPlayer;
+        serverCalls.OnGameStarted -= DisableRestartButton;
     }
 
     private void JoinRoom(string roomName)
     {
         menu.PrepareForTheGame();
-        serverWork.TryJoinRoom(roomName);
+        serverTransmitter.TryJoinRoom(roomName);
     }
 
     private void EnableRestartButton(string message)
@@ -69,7 +77,7 @@ public class MenuPresenter
 
     private void ShowNameOfSecondPlayer(string nickname)
     {
-        menu.ShowNameOfSecondPlayer(nickname);
+        menu.ShowNameOfSecondPlayer(nickname + "\nс вами!");
     }
 
     private void DisableRestartButton(bool isThisClientHost)

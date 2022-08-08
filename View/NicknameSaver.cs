@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NicknameHandler : MonoBehaviour
+public class NicknameSaver : MonoBehaviour
 {
     [SerializeField] private InputField _nicknameTextInputField;
     private string _nickname;
 
-    public delegate void ChangeNickname(string nickname);
+    public delegate void NicknameHandler(string nickname);
 
-    public event ChangeNickname OnNicknameChanged;
+    public event NicknameHandler OnNicknameChanged;
 
     public void SaveNickname()
     {

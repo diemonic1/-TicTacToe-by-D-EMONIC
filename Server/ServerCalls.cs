@@ -1,17 +1,54 @@
 using UnityEngine;
 
-public class ServerCalls : Photon.PunBehaviour
+public class ServerCalls : Photon.MonoBehaviour
 {
     [Header("Links to instances")]
-    [SerializeField] private ServerWork serverWork;
+    [SerializeField] private ServerTransmitter serverTransmitter;
 
-    public override void OnConnectedToPhoton()
+    public delegate void ServerFieldHandler(int numberOfActivated);
+
+    public delegate void PlayerHandler(string message);
+
+    public delegate void GameHandler(bool isThisClientHost);
+
+    public event ServerFieldHandler OnServerFieldUpdated;
+
+    public event PlayerHandler OnPlayerJoined;
+
+    public event GameHandler OnGameStarted;
+
+    [PunRPC]
+    public void UpdatePlayingFieldForEveryone(int numberOfActivated)
     {
-        Debug.Log("Successfully connected to Photon.");
+        OnServerFieldUpdated?.Invoke(numberOfActivated);
     }
 
-    public override void OnPhotonPlayerDisconnected(PhotonPlayer other)
+    [PunRPC]
+    public void StartGameForEveryone(string nicknameOfJoinedPlayer)
     {
-        serverWork.PlayerIsLeftRoom();
+        serverTransmitter.WriteDebugMessage("Game started.");
+
+        OnGameStarted?.Invoke(serverTransmitter.IsThisClientHost);
+
+        if (serverTransmitter.IsThisClientHost)
+        {
+            OnPlayerJoined?.Invoke(nicknameOfJoinedPlayer);
+
+            photonView.RPC("ShowNameHostPlayer", PhotonTargets.Others, serverTransmitter.Nickname);
+        }
+    }
+
+    [PunRPC]
+    public void ShowNameHostPlayer(string nicknameOfHostPlayer)
+    {
+        OnPlayerJoined?.Invoke(nicknameOfHostPlayer);
+    }
+
+    [PunRPC]
+    public void RestartLocalGame()
+    {
+        serverTransmitter.WriteDebugMessage("Game restarted.");
+
+        OnGameStarted?.Invoke(serverTransmitter.IsThisClientHost);
     }
 }

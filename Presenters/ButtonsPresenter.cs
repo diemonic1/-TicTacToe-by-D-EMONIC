@@ -6,17 +6,17 @@ public class ButtonsPresenter
     private readonly LeaveRoomButton leaveRoomButton;
 
     private readonly FieldLogic fieldLogic;
-    private readonly ServerWork serverWork;
+    private readonly ServerTransmitter serverTransmitter;
 
-    public ButtonsPresenter(ButtonsHandler buttonsHandler, FieldLogic fieldLogic, ServerWork serverWork)
+    public ButtonsPresenter(ButtonsContainer buttonsContainer, FieldLogic fieldLogic, ServerContainer serverContainer)
     {
-        createRoomButton = buttonsHandler.CreateRoomButton;
-        buttonsOnField = buttonsHandler.ButtonsOnField;
-        restartGameButton = buttonsHandler.RestartGameButton;
-        leaveRoomButton = buttonsHandler.LeaveRoomButton;
+        createRoomButton = buttonsContainer.CreateRoomButton;
+        buttonsOnField = buttonsContainer.ButtonsOnField;
+        restartGameButton = buttonsContainer.RestartGameButton;
+        leaveRoomButton = buttonsContainer.LeaveRoomButton;
 
         this.fieldLogic = fieldLogic;
-        this.serverWork = serverWork;
+        this.serverTransmitter = serverContainer.ServerTransmitter;
     }
 
     public void Enable()
@@ -45,17 +45,17 @@ public class ButtonsPresenter
 
     private void CreateNetworkRoom()
     {
-        serverWork.CreateNetworkRoom();
+        serverTransmitter.TryCreateNetworkRoom();
     }
 
     private void LeaveRoom()
     {
-        serverWork.LeaveRoom();
+        serverTransmitter.LeaveRoom();
     }
 
     private void RestartGame()
     {
-        serverWork.RestartGameForEveryone();
+        serverTransmitter.RestartGameForEveryone();
     }
 
     private void ButtonPressed(int numberOfActivated)
@@ -70,7 +70,7 @@ public class ButtonsPresenter
     {
         if (fieldLogic.CanButtonBePressed())
         {
-            serverWork.SendNumberOfPressedButton(numberOfActivated);
+            serverTransmitter.SendNumberOfPressedButton(numberOfActivated);
             return true;
         }
 

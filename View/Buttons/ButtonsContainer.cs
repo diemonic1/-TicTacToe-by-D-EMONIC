@@ -1,6 +1,6 @@
-public class ButtonsHandler
+public class ButtonsContainer
 {
-    public ButtonsHandler(CreateRoomButton createRoomButton, RestartGameButton restartGameButton, LeaveRoomButton leaveRoomButton, FieldButton[] buttonsOnField)
+    public ButtonsContainer(CreateRoomButton createRoomButton, RestartGameButton restartGameButton, LeaveRoomButton leaveRoomButton, FieldButton[] buttonsOnField)
     {
         CreateRoomButton = createRoomButton;
         RestartGameButton = restartGameButton;

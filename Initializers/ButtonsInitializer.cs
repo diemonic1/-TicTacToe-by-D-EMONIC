@@ -7,12 +7,12 @@ public class ButtonsInitializer : MonoBehaviour
     [SerializeField] private LeaveRoomButton leaveRoomButton;
     [SerializeField] private FieldButton[] buttonsOnField;
 
-    private ButtonsHandler buttonsHandler;
+    private ButtonsContainer buttonsContainer;
 
-    public ButtonsHandler GetButtonsHandler()
+    public ButtonsContainer GetButtonsHandler()
     {
-        buttonsHandler = new ButtonsHandler(createRoomButton, restartGameButton, leaveRoomButton, buttonsOnField);
+        buttonsContainer = new ButtonsContainer(createRoomButton, restartGameButton, leaveRoomButton, buttonsOnField);
 
-        return buttonsHandler;
+        return buttonsContainer;
     }
 }

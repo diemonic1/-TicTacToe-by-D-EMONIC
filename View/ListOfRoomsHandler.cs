@@ -22,7 +22,10 @@ public class ListOfRoomsHandler
             string name = roomsList[i].Name;
             int countOfPlayersInRoom = roomsList[i].PlayerCount;
 
-            GameObject room = menu.CreateRoomForList(i, name, countOfPlayersInRoom);
+            float yPosition = 525f - (i * 110);
+            string caption = name + " " + countOfPlayersInRoom + "/2";
+
+            GameObject room = menu.CreateRoomForList(yPosition, name, caption);
 
             _roomsList[i] = room;
 

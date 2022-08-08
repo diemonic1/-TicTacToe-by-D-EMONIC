@@ -3,13 +3,15 @@ public class FieldViewPresenter
     private readonly FieldView fieldView;
 
     private readonly FieldLogic fieldLogic;
-    private readonly ServerWork serverWork;
+    private readonly ServerTransmitter serverTransmitter;
+    private readonly ServerCalls serverCalls;
 
-    public FieldViewPresenter(FieldView fieldView, FieldLogic fieldLogic, ServerWork serverWork)
+    public FieldViewPresenter(FieldView fieldView, FieldLogic fieldLogic, ServerContainer serverContainer)
     {
         this.fieldView = fieldView;
         this.fieldLogic = fieldLogic;
-        this.serverWork = serverWork;
+        this.serverTransmitter = serverContainer.ServerTransmitter;
+        this.serverCalls = serverContainer.ServerCalls;
     }
 
     public void Enable()
@@ -17,9 +19,9 @@ public class FieldViewPresenter
         fieldLogic.OnFieldChanged += UpdateFieldView;
         fieldLogic.OnGameOver += GameOver;
 
-        serverWork.OnPlayerLeftRoom += PrepareRoom;
-        serverWork.OnGameStarted += StartGame;
-        serverWork.OnServerFieldUpdated += UpdateFieldState;
+        serverTransmitter.OnPlayerLeftRoom += PrepareRoom;
+        serverCalls.OnGameStarted += StartGame;
+        serverCalls.OnServerFieldUpdated += UpdateFieldState;
     }
 
     public void Disable()
@@ -27,9 +29,9 @@ public class FieldViewPresenter
         fieldLogic.OnFieldChanged -= UpdateFieldView;
         fieldLogic.OnGameOver -= GameOver;
 
-        serverWork.OnPlayerLeftRoom -= PrepareRoom;
-        serverWork.OnGameStarted -= StartGame;
-        serverWork.OnServerFieldUpdated -= UpdateFieldState;
+        serverTransmitter.OnPlayerLeftRoom -= PrepareRoom;
+        serverCalls.OnGameStarted -= StartGame;
+        serverCalls.OnServerFieldUpdated -= UpdateFieldState;
     }
 
     private void UpdateFieldView(int numberOfActivated, char sign, string message)
