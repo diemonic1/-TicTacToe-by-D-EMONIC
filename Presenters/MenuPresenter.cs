@@ -1,38 +1,54 @@
-public class ServerPresenter
+public class MenuPresenter
 {
     private readonly Menu menu;
-    private readonly FieldView fieldView;
-    private readonly ServerWork serverWork;
-    private readonly PlayingField playingField;
     private readonly ListOfRoomsHandler listOfRoomsHandler;
 
-    public ServerPresenter(Menu menu, FieldView fieldView, ServerWork serverWork, PlayingField playingField, ListOfRoomsHandler listOfRoomsHandler)
+    private readonly FieldLogic fieldLogic;
+    private readonly ServerWork serverWork;
+
+    public MenuPresenter(Menu menu, FieldLogic fieldLogic, ServerWork serverWork, ListOfRoomsHandler listOfRoomsHandler)
     {
         this.menu = menu;
-        this.fieldView = fieldView;
+        this.fieldLogic = fieldLogic;
         this.serverWork = serverWork;
-        this.playingField = playingField;
         this.listOfRoomsHandler = listOfRoomsHandler;
     }
 
     public void Enable()
     {
+        menu.OnJoinRoom += JoinRoom;
+
+        fieldLogic.OnGameOver += EnableRestartButton;
+
         serverWork.OnListUpdated += RefreshListOfRooms;
         serverWork.OnPlayerLeftRoom += ClearRoom;
         serverWork.OnHostLeftRoom += BackToListOfRooms;
         serverWork.OnPlayerJoined += ShowNameOfSecondPlayer;
-        serverWork.OnGameStarted += StartGame;
-        serverWork.OnServerFieldUpdated += UpdatePlayingField;
+        serverWork.OnGameStarted += DisableRestartButton;
     }
 
     public void Disable()
     {
+        menu.OnJoinRoom -= JoinRoom;
+
+        fieldLogic.OnGameOver -= EnableRestartButton;
+
         serverWork.OnListUpdated -= RefreshListOfRooms;
         serverWork.OnPlayerLeftRoom -= ClearRoom;
         serverWork.OnHostLeftRoom -= BackToListOfRooms;
         serverWork.OnPlayerJoined -= ShowNameOfSecondPlayer;
-        serverWork.OnGameStarted -= StartGame;
-        serverWork.OnServerFieldUpdated -= UpdatePlayingField;
+        serverWork.OnGameStarted -= DisableRestartButton;
+    }
+
+    private void JoinRoom(string roomName)
+    {
+        menu.PrepareForTheGame();
+        serverWork.TryJoinRoom(roomName);
+    }
+
+    private void EnableRestartButton(string message)
+    {
+        menu.SetVisibilityOfRestartButton(true);
     }
 
     private void RefreshListOfRooms(RoomInfo[] roomsList)
@@ -44,8 +60,6 @@ public class ServerPresenter
     {
         menu.ClearNameOfSecondPlayer();
         menu.SetVisibilityOfRestartButton(false);
-
-        fieldView.PrepareRoomForNewPlayer();
     }
 
     private void BackToListOfRooms()
@@ -58,15 +72,8 @@ public class ServerPresenter
         menu.ShowNameOfSecondPlayer(nickname);
     }
 
-    private void StartGame(bool isThisClientHost)
+    private void DisableRestartButton(bool isThisClientHost)
     {
-        playingField.RestartGame();
-        fieldView.RestartGame(playingField.GetNextStepMessage(isThisClientHost));
         menu.SetVisibilityOfRestartButton(false);
-    }
-
-    private void UpdatePlayingField(int numberOfActivated, bool isThisClientHost)
-    {
-        playingField.UpdatePlayingField(numberOfActivated, isThisClientHost);
     }
 }

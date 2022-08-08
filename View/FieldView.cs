@@ -23,9 +23,9 @@ public class FieldView : MonoBehaviour
         _message.text = message;
     }
 
-    public void UpdateFieldView(int numberOfActivated, int sign, string message)
+    public void UpdateFieldView(int numberOfActivated, char sign, string message)
     {
-        if (sign == 0)
+        if (sign == '0')
             _playingFieldImages_zeros[numberOfActivated].SetActive(true);
         else
             _playingFieldImages_crosses[numberOfActivated].SetActive(true);

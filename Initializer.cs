@@ -3,34 +3,42 @@
 public class Initializer : MonoBehaviour
 {
     [Header("Links to instances")]
+    [SerializeField] private ButtonsInitializer buttonsInitializer;
+
     [SerializeField] private Menu menu;
     [SerializeField] private ServerWork serverWork;
     [SerializeField] private FieldView fieldView;
     [SerializeField] private NicknameHandler nicknameHandler;
-    [SerializeField] private ButtonOnField[] buttonsOnField;
+
+    private FieldLogic fieldLogic;
     private ListOfRoomsHandler listOfRoomsHandler;
-    private PlayingField playingField;
-    private ViewPresenter viewPresenter;
-    private ServerPresenter serverPresenter;
-    private PlayingFieldPresenter playingFieldPresenter;
+
+    private FieldViewPresenter fieldViewPresenter;
+    private MenuPresenter menuPresenter;
+    private NicknameHandlerPresenter nicknameHandlerPresenter;
+    private ButtonsPresenter buttonsPresenter;
 
     private void OnEnable()
     {
-        playingField = new PlayingField();
+        fieldLogic = new FieldLogic();
         listOfRoomsHandler = new ListOfRoomsHandler(menu);
-        viewPresenter = new ViewPresenter(menu, serverWork, nicknameHandler, playingField, buttonsOnField);
-        serverPresenter = new ServerPresenter(menu, fieldView, serverWork, playingField, listOfRoomsHandler);
-        playingFieldPresenter = new PlayingFieldPresenter(menu, fieldView, playingField, buttonsOnField);
 
-        viewPresenter.Enable();
-        serverPresenter.Enable();
-        playingFieldPresenter.Enable();
+        fieldViewPresenter = new FieldViewPresenter(fieldView, fieldLogic, serverWork);
+        menuPresenter = new MenuPresenter(menu, fieldLogic, serverWork, listOfRoomsHandler);
+        nicknameHandlerPresenter = new NicknameHandlerPresenter(nicknameHandler, serverWork);
+        buttonsPresenter = new ButtonsPresenter(buttonsInitializer.GetButtonsHandler(), fieldLogic, serverWork);
+
+        fieldViewPresenter.Enable();
+        menuPresenter.Enable();
+        nicknameHandlerPresenter.Enable();
+        buttonsPresenter.Enable();
     }
 
     private void OnDisable()
     {
-        viewPresenter.Disable();
-        serverPresenter.Disable();
-        playingFieldPresenter.Disable();
+        fieldViewPresenter.Disable();
+        menuPresenter.Disable();
+        nicknameHandlerPresenter.Disable();
+        buttonsPresenter.Disable();
     }
 }

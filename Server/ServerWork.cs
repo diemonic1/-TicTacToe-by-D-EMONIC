@@ -2,7 +2,7 @@
 
 public class ServerWork : Photon.MonoBehaviour
 {
-    private bool _isGameStarted;
+    private bool _isThisClientHost;
     private string _nickname;
     private RoomInfo[] _roomsList;
 
@@ -10,7 +10,7 @@ public class ServerWork : Photon.MonoBehaviour
 
     public delegate void PlayerLeftHandler();
 
-    public delegate void ServerFieldHandler(int numberOfActivated, bool isThisClientHost);
+    public delegate void ServerFieldHandler(int numberOfActivated);
 
     public delegate void ServerCallHandler(string message);
 
@@ -28,8 +28,6 @@ public class ServerWork : Photon.MonoBehaviour
 
     public event ServerStartGame OnGameStarted;
 
-    public bool IsThisClientHost { get; private set; }
-
     public void SetNickname(string nickname)
     {
         _nickname = nickname;
@@ -43,7 +41,7 @@ public class ServerWork : Photon.MonoBehaviour
         PhotonNetwork.CreateRoom(_nickname, roomOptions, TypedLobby.Default);
 
         Debug.Log("Room created. This is first (host) player.");
-        IsThisClientHost = true;
+        _isThisClientHost = true;
     }
 
     public void TryJoinRoom(string roomName)
@@ -53,7 +51,7 @@ public class ServerWork : Photon.MonoBehaviour
         PhotonNetwork.JoinRoom(roomName);
 
         Debug.Log("Successfully connected to the room. This is second (slave) player.");
-        IsThisClientHost = false;
+        _isThisClientHost = false;
     }
 
     public void LeaveRoom()
@@ -66,11 +64,9 @@ public class ServerWork : Photon.MonoBehaviour
     {
         Debug.Log("Player is left room.");
 
-        _isGameStarted = false;
-
         OnPlayerLeftRoom?.Invoke();
 
-        bool hostLeftRoom = !IsThisClientHost;
+        bool hostLeftRoom = !_isThisClientHost;
 
         if (hostLeftRoom)
         {
@@ -89,14 +85,13 @@ public class ServerWork : Photon.MonoBehaviour
 
     public void OnJoinedRoom()
     {
-        if (!IsThisClientHost)
+        if (!_isThisClientHost)
             photonView.RPC("StartGameForEveryone", PhotonTargets.All, _nickname);
     }
 
     public void SendNumberOfPressedButton(int numberOfActivated)
     {
-        if (_isGameStarted)
-            photonView.RPC("UpdatePlayingFieldForEveryone", PhotonTargets.All, numberOfActivated);
+        photonView.RPC("UpdatePlayingFieldForEveryone", PhotonTargets.All, numberOfActivated);
     }
 
     public void RestartGameForEveryone()
@@ -107,7 +102,7 @@ public class ServerWork : Photon.MonoBehaviour
     [PunRPC]
     public void UpdatePlayingFieldForEveryone(int numberOfActivated)
     {
-        OnServerFieldUpdated?.Invoke(numberOfActivated, IsThisClientHost);
+        OnServerFieldUpdated?.Invoke(numberOfActivated);
     }
 
     [PunRPC]
@@ -115,11 +110,9 @@ public class ServerWork : Photon.MonoBehaviour
     {
         Debug.Log("Game started.");
 
-        _isGameStarted = true;
+        OnGameStarted?.Invoke(_isThisClientHost);
 
-        OnGameStarted?.Invoke(IsThisClientHost);
-
-        if (IsThisClientHost)
+        if (_isThisClientHost)
         {
             OnPlayerJoined?.Invoke(nicknameOfJoinedPlayer);
 
@@ -138,7 +131,7 @@ public class ServerWork : Photon.MonoBehaviour
     {
         Debug.Log("Game restarted.");
 
-        OnGameStarted?.Invoke(IsThisClientHost);
+        OnGameStarted?.Invoke(_isThisClientHost);
     }
 
     private void Start()

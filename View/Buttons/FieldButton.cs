@@ -1,10 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ButtonOnField : MonoBehaviour
+public class FieldButton : ButtonRoot
 {
     [SerializeField] private int _buttonNumber;
-    private Button button;
 
     public delegate void ButtonHandler(int numberOfActivated);
 
@@ -12,16 +11,10 @@ public class ButtonOnField : MonoBehaviour
 
     public void DiactivateButton()
     {
-        button.interactable = false;
+        this.GetComponent<Button>().interactable = false;
     }
 
-    private void Start()
-    {
-        button = this.GetComponent<Button>();
-        button.onClick.AddListener(OnClick);
-    }
-
-    private void OnClick()
+    protected override void OnClick()
     {
         OnButtonPressed?.Invoke(_buttonNumber);
     }

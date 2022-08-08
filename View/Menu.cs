@@ -6,15 +6,7 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject _gameFolder, _listOfRooms, _roomMenuElement, _restartButton;
     [SerializeField] private Text _secondPlayerNicknameText;
 
-    public delegate void ButtonsHandler();
-
     public delegate void ButtonHandler(string roomName);
-
-    public event ButtonsHandler OnCreateRoom;
-
-    public event ButtonsHandler OnRestartGame;
-
-    public event ButtonsHandler OnLeaveRoom;
 
     public event ButtonHandler OnJoinRoom;
 
@@ -27,16 +19,6 @@ public class Menu : MonoBehaviour
     {
         _listOfRooms.SetActive(false);
         _gameFolder.SetActive(true);
-    }
-
-    public void CreateNetworkRoom()
-    {
-        OnCreateRoom?.Invoke();
-    }
-
-    public void RestartGameForEveryone()
-    {
-        OnRestartGame?.Invoke();
     }
 
     public void ShowNameOfSecondPlayer(string nicknameOfSecondPlayer)
@@ -54,8 +36,6 @@ public class Menu : MonoBehaviour
         _gameFolder.SetActive(false);
         _listOfRooms.SetActive(true);
         _secondPlayerNicknameText.text = string.Empty;
-
-        OnLeaveRoom?.Invoke();
     }
 
     public GameObject CreateRoomForList(int number, string name, int countOfPlayersInRoom)
@@ -69,7 +49,7 @@ public class Menu : MonoBehaviour
         room.name = name;
         room.GetComponent<Text>().text = name + " " + countOfPlayersInRoom + "/2";
 
-        room.GetComponent<RoomInListButton>().OnJoinRoom += JoinRoom;
+        room.GetComponent<JoinRoomButton>().OnJoinRoom += JoinRoom;
 
         return room;
     }
