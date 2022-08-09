@@ -22,6 +22,11 @@ public class NicknameSaver : MonoBehaviour
         if (PlayerPrefs.GetString("Nickname") != string.Empty)
             _nicknameTextInputField.text = PlayerPrefs.GetString("Nickname");
         else
-            _nicknameTextInputField.text = "player";
+            _nicknameTextInputField.text = GenerateRandomNickname();
+    }
+
+    private string GenerateRandomNickname()
+    {
+        return "Player " + Random.Range(100, 999);
     }
 }

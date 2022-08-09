@@ -17,7 +17,10 @@ public class ServerTransmitter : Photon.MonoBehaviour
 
     public void SetNickname(string nickname)
     {
-        Nickname = nickname;
+        if (nickname.Length <= 12)
+            Nickname = nickname;
+        else
+            throw new Exception("Nickname must be no more than 12 characters!");
     }
 
     public void TryCreateNetworkRoom()

@@ -9,7 +9,5 @@ public abstract class ButtonRoot : MonoBehaviour
         button.onClick.AddListener(OnClick);
     }
 
-    protected virtual void OnClick()
-    {
-    }
+    protected abstract void OnClick();
 }

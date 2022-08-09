@@ -29,25 +29,6 @@
         ClearPlayingField();
     }
 
-    public string GetNextStepMessage()
-    {
-        int nextStepOfGame = _stepOfGame + 1;
-
-        string message;
-
-        if (nextStepOfGame % 2 == 0)
-            message = "ход ноликов ";
-        else
-            message = "ход крестиков ";
-
-        if (_isThisMyStep)
-            message += "(ваш)";
-        else
-            message += "(не ваш)";
-
-        return message;
-    }
-
     public void UpdateFieldState(int numberOfActivated)
     {
         _stepOfGame += 1;
@@ -68,6 +49,25 @@
         OnFieldChanged?.Invoke(numberOfActivated, sign, GetNextStepMessage());
 
         CheckFieldOnWinLine();
+    }
+
+    public string GetNextStepMessage()
+    {
+        int nextStepOfGame = _stepOfGame + 1;
+
+        string message;
+
+        if (nextStepOfGame % 2 == 0)
+            message = "ход ноликов ";
+        else
+            message = "ход крестиков ";
+
+        if (_isThisMyStep)
+            message += "(ваш)";
+        else
+            message += "(не ваш)";
+
+        return message;
     }
 
     private void ClearPlayingField()

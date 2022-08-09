@@ -11,9 +11,9 @@ public class ButtonsPresenter
     public ButtonsPresenter(ButtonsContainer buttonsContainer, FieldLogic fieldLogic, ServerContainer serverContainer)
     {
         createRoomButton = buttonsContainer.CreateRoomButton;
-        buttonsOnField = buttonsContainer.ButtonsOnField;
         restartGameButton = buttonsContainer.RestartGameButton;
         leaveRoomButton = buttonsContainer.LeaveRoomButton;
+        buttonsOnField = buttonsContainer.ButtonsOnField;
 
         this.fieldLogic = fieldLogic;
         this.serverTransmitter = serverContainer.ServerTransmitter;
