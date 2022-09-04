@@ -36,23 +36,31 @@ public class FieldViewPresenter
 
     private void UpdateFieldView(int numberOfActivated, char sign, string message)
     {
-        fieldView.UpdateFieldView(numberOfActivated, sign, message);
+        if (sign == '0')
+            fieldView.PutOnFieldZero(numberOfActivated);
+        else
+            fieldView.PutOnFieldCross(numberOfActivated);
+
+        fieldView.ShowMessage(message);
     }
 
     private void GameOver(string message)
     {
-        fieldView.ShowGameOverScreen(message);
+        fieldView.DisablePlayingField();
+        fieldView.ShowMessage(message);
     }
 
     private void PrepareRoom()
     {
-        fieldView.PrepareRoomForNewPlayer();
+        fieldView.ClearField();
+        fieldView.ShowMessage("ожидаем второго игрока");
     }
 
     private void StartGame(bool isThisClientHost)
     {
         fieldLogic.RestartGame(isThisClientHost);
-        fieldView.RestartGame(fieldLogic.GetNextStepMessage());
+        fieldView.ClearField();
+        fieldView.ShowMessage(fieldLogic.GetNextStepMessage());
     }
 
     private void UpdateFieldState(int numberOfActivated)
